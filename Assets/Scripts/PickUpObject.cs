@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq.Expressions;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PickUpObject : MonoBehaviour
@@ -159,6 +160,8 @@ public class PickUpObject : MonoBehaviour
         if (peopleCount == totalpeople)
         {
             //guess game ends here boys!
+            PlayerController.lasttime = true;
+            FindObjectOfType<DialogController>().ShowNextDialog();
         }
         sound.playSoundeffect(SoundController.SE.PD);
         sound.playSoundeffect(SoundController.SE.FLARE);

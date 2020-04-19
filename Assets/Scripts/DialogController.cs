@@ -12,7 +12,7 @@ public class DialogController : MonoBehaviour
 
     string Starttext = "This generator needs fuel or we'll die! Go get some wood. 'e' to close";
     string humantext = "We've run out of wood? But we need more fuel...";
-    string pickedup = "What no. PUT ME DOWN!";
+    string pickedup = "There's no more fuel. I have no choice but to climb in. The fire must go on.";
 
     void Start()
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +10,17 @@ public class GeneratorController : MonoBehaviour
     public float markerAnchorOffsety = -1f;
 
     public List<Image> burnMarkers;
-    public Image fuelIndicatorPrefab;
+    public GameObject fuelIndicatorPrefab;
     public float indicatorxoffset = 25f;
 
     public float burnMaxtime = 5f;
-    public int currentFuel = 3;
+    public int currentFuel;
+
+    public int EASYSTART = 5;
+    public int MEDIUMSTART = 4;
+    public int HARDSTART = 3;
+
+
     float currentBurn;
 
     SoundController sound;
@@ -22,6 +29,23 @@ public class GeneratorController : MonoBehaviour
 
     private void Start()
     {
+        switch (Settings.getDiff())
+        {
+            case (int)Settings.DIFFICULTY.EASY:
+                currentFuel = EASYSTART;
+                break;
+            case (int)Settings.DIFFICULTY.MEDIUM:
+                currentFuel = MEDIUMSTART;
+                break;
+            case (int)Settings.DIFFICULTY.HARD:
+                currentFuel = HARDSTART;
+                break;
+            default:
+                Debug.LogWarning("Unknown difficulty: " + Settings.getDiff());
+                currentFuel = MEDIUMSTART;
+                break;
+        }
+
         burnMarkers = new List<Image>();
         currentBurn = burnMaxtime;
         updateFuelIndicators();
@@ -59,11 +83,7 @@ public class GeneratorController : MonoBehaviour
             // put another log on the fire JOSIE
             if(currentFuel == 0)
             {
-                // uhoh
-                gameovertext.SetActive(true);
-                sound.stopMusic();
-                sound.playSoundeffect(SoundController.SE.SCREAM);
-                // END
+                END();
             }
             currentFuel--;
             currentBurn = burnMaxtime;
@@ -85,7 +105,11 @@ public class GeneratorController : MonoBehaviour
         {
 
             // if this is the last one then we need to shape it
-            Image bi = Instantiate(fuelIndicatorPrefab, makerAnchors.transform.position, Quaternion.identity);
+            GameObject g = Instantiate(fuelIndicatorPrefab, makerAnchors.transform.position, Quaternion.identity);
+            Image bi = g.GetComponent<Image>();
+
+            g.GetComponent<Animator>().Rebind();
+
             if (i == 0)
             {
                 bi.transform.SetParent(makerAnchors.transform);
@@ -124,5 +148,14 @@ public class GeneratorController : MonoBehaviour
                 bi.color = cl;
             }
         }
+    }
+
+    public void END()
+    {
+        // uhoh
+        gameovertext.SetActive(true);
+        sound.stopMusic();
+        sound.playSoundeffect(SoundController.SE.SCREAM);
+        // END
     }
 }

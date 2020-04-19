@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,13 +26,33 @@ public class PlayerController : MonoBehaviour
 
     SoundController sound;
 
+    public AudioMixer music;
+
+    public static bool lasttime = false;
+
+    GeneratorController gc;
+
+    bool walkingRight = false;
+
     
     private void Awake()
     {
         ani = GetComponent<Animator>();
+        gc = FindObjectOfType<GeneratorController>();
         om = gameObject.GetComponent(typeof(ObjectMover)) as ObjectMover;
         om.setSpeed(speed);
         sound = FindObjectOfType<SoundController>();
+
+        if(!Settings.getMusic())
+        {
+            //disable the music
+            music.SetFloat("musicVol", -80f);
+        }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
     /// <summary>
@@ -45,6 +65,11 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown("e"))
             {
                 FindObjectOfType<DialogController>().HideDialog();
+                if(lasttime)
+                {
+                    sound.playSoundeffect(SoundController.SE.FLARE);
+                    gc.END();
+                }
             }
         }
         else
@@ -128,12 +153,14 @@ public class PlayerController : MonoBehaviour
         if (h > 0)
         {
             // right?
-            movedir += (int)ObjectMover.DIR.RIGHT;
+           movedir += (int)ObjectMover.DIR.RIGHT;
+            walkingRight = true;
         }
         else if (h < 0)
         {
             // left?
             movedir += (int)ObjectMover.DIR.LEFT;
+            walkingRight = false;
         }
 
         if (v > 0)
@@ -152,6 +179,17 @@ public class PlayerController : MonoBehaviour
             moving = true;
             om.Move((ObjectMover.DIR)movedir);
         }
+
+        Vector3 scale = transform.localScale;
+        if (walkingRight)
+        {
+            scale.x = -1;
+        }
+        else
+        {
+            scale.x = 1;
+        }
+        transform.localScale = scale;
 
         sound.setWalkingLoop(moving);
 
