@@ -24,12 +24,15 @@ public class PlayerController : MonoBehaviour
 
     private bool moving = false;
 
+    SoundController sound;
+
     
     private void Awake()
     {
         ani = GetComponent<Animator>();
         om = gameObject.GetComponent(typeof(ObjectMover)) as ObjectMover;
         om.setSpeed(speed);
+        sound = FindObjectOfType<SoundController>();
     }
 
     /// <summary>
@@ -149,6 +152,8 @@ public class PlayerController : MonoBehaviour
             moving = true;
             om.Move((ObjectMover.DIR)movedir);
         }
+
+        sound.setWalkingLoop(moving);
 
         if (moving)
         {

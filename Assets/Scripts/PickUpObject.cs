@@ -12,10 +12,13 @@ public class PickUpObject : MonoBehaviour
     bool pickupableinrange = false;
     bool holdingObject = false;
     bool canPickupNPCs = false;
+    bool holdingHuman = false;
 
     public Image inventory;
 
     GameObject targetpickup;
+
+    SoundController sound;
 
     public Sprite mask;
 
@@ -38,6 +41,7 @@ public class PickUpObject : MonoBehaviour
         totalWood = v.Length;
         v = GameObject.FindGameObjectsWithTag("npc");
         totalpeople = v.Length;
+        sound = FindObjectOfType<SoundController>();
 
      //   Debug.Log("there are " + totalWood + " Wood");
     //    Debug.Log("there are " + totalpeople + " people");
@@ -117,10 +121,13 @@ public class PickUpObject : MonoBehaviour
         else if (targetpickup.tag == "npc")
         {
             peopleCount++;
+            holdingHuman = true;
         }
         Destroy(targetpickup);
 
         holdingObject = true;
+
+        sound.playSoundeffect(SoundController.SE.PU);
         return true;
     }
 
@@ -141,8 +148,10 @@ public class PickUpObject : MonoBehaviour
         {
             if (!canPickupNPCs)
             {
+                sound.stopMusic();
                 // to only go once
                 FindObjectOfType<DialogController>().ShowNextDialog();
+                sound.playDarkMusic();
             }
             canPickupNPCs = true;
         }
@@ -151,6 +160,14 @@ public class PickUpObject : MonoBehaviour
         {
             //guess game ends here boys!
         }
+        sound.playSoundeffect(SoundController.SE.PD);
+        sound.playSoundeffect(SoundController.SE.FLARE);
+        if(holdingHuman)
+        {
+            sound.playSoundeffect(SoundController.SE.SCREAM);
+            holdingHuman = false;
+        }
+        
 
         return true;
     }

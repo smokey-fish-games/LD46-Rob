@@ -16,6 +16,8 @@ public class GeneratorController : MonoBehaviour
     public int currentFuel = 3;
     float currentBurn;
 
+    SoundController sound;
+
     public GameObject gameovertext;
 
     private void Start()
@@ -23,6 +25,7 @@ public class GeneratorController : MonoBehaviour
         burnMarkers = new List<Image>();
         currentBurn = burnMaxtime;
         updateFuelIndicators();
+        sound = FindObjectOfType<SoundController>();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -58,7 +61,8 @@ public class GeneratorController : MonoBehaviour
             {
                 // uhoh
                 gameovertext.SetActive(true);
-                Application.Quit();
+                sound.stopMusic();
+                sound.playSoundeffect(SoundController.SE.SCREAM);
                 // END
             }
             currentFuel--;
