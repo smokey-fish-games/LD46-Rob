@@ -2,6 +2,8 @@
 A short game about keeping a fire alive with whatever fuel you can find. 
 Approximate time to complete: 2 minutes
 
+Can be played here: https://jademonkey7988.itch.io/fuel-the-fire
+
 # How to Play
 
 Run around finding items that you can throw into the fire. Pick them up when prompted and take them back to the fire pit to increase it's fuel. Keep going until there is no more fuel.
