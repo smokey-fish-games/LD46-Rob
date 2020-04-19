@@ -13,6 +13,13 @@ public class NPCWobbler : MonoBehaviour
     public float maxSpeed = 3f;
     public float minSpeed = 1f;
 
+    public float footprintSpace = 0.3f;
+    public float nextFootPrint;
+
+
+    public GameObject footprintsPrefab;
+    public GameObject footprintspawnpoint;
+
     private ObjectMover om;
     Animator ani;
 
@@ -29,6 +36,8 @@ public class NPCWobbler : MonoBehaviour
         // Set random speed for this one object
         speed = Random.Range(minSpeed, maxSpeed);
         om.setSpeed(speed);
+
+        nextFootPrint = footprintSpace;
     }
 
     private void FixedUpdate()
@@ -45,6 +54,7 @@ public class NPCWobbler : MonoBehaviour
             shouldStop();
             moveNow -= Time.deltaTime;
         }
+        CreateFootPrint();
     }
 
     void shouldMove()
@@ -70,5 +80,25 @@ public class NPCWobbler : MonoBehaviour
             moveNow = Random.Range(waitMin, waitMax);
             //   Debug.Log("Stopping for: " + moveNow);
         }
+    }
+
+    void CreateFootPrint()
+    {
+        nextFootPrint -= Time.deltaTime;
+
+        if (!moving)
+        {
+            nextFootPrint = footprintSpace;
+            return;
+        }
+
+        if (nextFootPrint > 0)
+        {
+            return;
+        }
+
+        Instantiate(footprintsPrefab, footprintspawnpoint.transform.position, Quaternion.identity);
+
+        nextFootPrint = footprintSpace;
     }
 }

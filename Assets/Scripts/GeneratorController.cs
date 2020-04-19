@@ -10,7 +10,7 @@ public class GeneratorController : MonoBehaviour
     public float markerAnchorOffsety = -1f;
 
     public List<Image> burnMarkers;
-    public GameObject fuelIndicatorPrefab;
+    public Image fuelIndicatorPrefab;
     public float indicatorxoffset = 25f;
 
     public float burnMaxtime = 5f;
@@ -103,12 +103,8 @@ public class GeneratorController : MonoBehaviour
 
         for (int i = 0; i < currentFuel; i++)
         {
-
             // if this is the last one then we need to shape it
-            GameObject g = Instantiate(fuelIndicatorPrefab, makerAnchors.transform.position, Quaternion.identity);
-            Image bi = g.GetComponent<Image>();
-
-            g.GetComponent<Animator>().Rebind();
+            Image bi = Instantiate(fuelIndicatorPrefab, makerAnchors.transform.position, Quaternion.identity);
 
             if (i == 0)
             {
@@ -152,9 +148,10 @@ public class GeneratorController : MonoBehaviour
 
     public void END()
     {
+        FindObjectOfType<PlayerController>().stopped = true;
         // uhoh
         gameovertext.SetActive(true);
-        sound.stopMusic();
+        sound.stopAll();
         sound.playSoundeffect(SoundController.SE.SCREAM);
         // END
     }

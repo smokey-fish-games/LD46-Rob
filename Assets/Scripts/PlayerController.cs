@@ -10,7 +10,11 @@ public class PlayerController : MonoBehaviour
     public float horzizontalpickupboxoffset = 0.15f;
     public float horizontalverticalpickupboxoffset = 0.08f;
     public float arrowRadius = 0.15f;
+    public float footprintSpace = 0.2f;
+    public float nextFootPrint;
     Animator ani;
+
+    public bool stopped = false;
 
     public GameObject arrow;
     public Transform arrowTarget;
@@ -34,6 +38,9 @@ public class PlayerController : MonoBehaviour
 
     bool walkingRight = false;
 
+    public GameObject footprintsPrefab;
+    public GameObject footprintspawnpoint;
+
     
     private void Awake()
     {
@@ -48,6 +55,7 @@ public class PlayerController : MonoBehaviour
             //disable the music
             music.SetFloat("musicVol", -80f);
         }
+        nextFootPrint = footprintSpace;
     }
 
     public void Restart()
@@ -60,6 +68,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Update()
     {
+        if (stopped)
+        {
+            return;
+        }
+            
         if (FindObjectOfType<DialogController>().isDialogOnScreen())
         {
             if (Input.GetKeyDown("e"))
@@ -78,6 +91,7 @@ public class PlayerController : MonoBehaviour
             CalculateMovement();
             CalculatePickupBox();
             CalculatePointer();
+            CreateFootPrint();
             if (Input.GetKeyDown("e"))
             {
                 GetComponentInChildren<PickUpObject>().pickupTarget();
@@ -201,5 +215,25 @@ public class PlayerController : MonoBehaviour
         {
             ani.SetInteger("WalkDir", 0);
         }
+    }
+    
+    void CreateFootPrint()
+    {
+        nextFootPrint -= Time.deltaTime;
+
+        if (!moving)
+        {
+            nextFootPrint = footprintSpace;
+            return;
+        }
+
+        if(nextFootPrint > 0)
+        {
+            return;
+        }
+
+        Instantiate(footprintsPrefab, footprintspawnpoint.transform.position, Quaternion.identity);
+
+        nextFootPrint = footprintSpace;
     }
 }

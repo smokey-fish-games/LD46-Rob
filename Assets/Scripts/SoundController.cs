@@ -13,6 +13,7 @@ public class SoundController : MonoBehaviour
     public AudioSource sesource;
     public AudioSource musicsource;
     public AudioSource walkLoop;
+    public AudioSource fireSource;
 
     public enum SE { FLARE, SCREAM, PU, PD };
 
@@ -94,5 +95,13 @@ public class SoundController : MonoBehaviour
     {
         musicsource.clip = musicDark;
         musicsource.Play();
+    }
+
+    public void stopAll()
+    {
+        stopMusic();
+        fireSource.Stop();
+        walkLoop.Stop();
+        sesource.Stop();
     }
 }
